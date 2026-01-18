@@ -58,7 +58,10 @@ button {
   </style>
 </head>
 <body>
-
+<select id="lang">
+  <option value="tr">Türkçe</option>
+  <option value="en">English</option>
+</select>
 <h2>AI Maç Analiz</h2>
 <select id="lig">
   <option value="superlig">Süper Lig</option>
@@ -70,69 +73,63 @@ button {
 
 <button onclick="analiz()">Analizi Göster</button>
 
-<pre id="sonuc"></pre>
+<div id="sonuc"></div>
 
 
+const lang = document.getElementById("lang").value;
 
+const t = {
+  tr: {
+    home: "Ev Kazanır",
+    draw: "Beraberlik",
+    away: "Deplasman Kazanır",
+    over: "2.5 Üst",
+    under: "2.5 Alt",
+    btts: "KG Var",
+    nobtts: "KG Yok",
+    note: "Bilgilendirme amaçlıdır"
+  },
+  en: {
+    home: "Home Win",
+    draw: "Draw",
+    away: "Away Win",
+    over: "Over 2.5",
+    under: "Under 2.5",
+    btts: "BTTS Yes",
+    nobtts: "BTTS No",
+    note: "For information only"
+  }
+};
+
+sonuc.innerHTML = `
+<div class="card">
+<b>${h} vs ${a}</b><br><br>
+
+${t[lang].home}: %${stats.ev}
+<div class="bar"><div class="bar-fill" style="width:${stats.ev}%"></div></div>
+
+${t[lang].draw}: %${stats.ber}
+<div class="bar"><div class="bar-fill" style="width:${stats.ber}%"></div></div>
+
+${t[lang].away}: %${stats.dep}
+<div class="bar"><div class="bar-fill" style="width:${stats.dep}%"></div></div>
+
+${t[lang].over}: %${stats.ust}
+<div class="bar"><div class="bar-fill" style="width:${stats.ust}%"></div></div>
+
+${t[lang].under}: %${stats.alt}
+<div class="bar"><div class="bar-fill" style="width:${stats.alt}%"></div></div>
+
+${t[lang].btts}: %${stats.kgv}
+<div class="bar"><div class="bar-fill" style="width:${stats.kgv}%"></div></div>
+
+${t[lang].nobtts}: %${stats.kgy}
+<div class="bar"><div class="bar-fill" style="width:${stats.kgy}%"></div></div>
+
+<div class="small">(${t[lang].note})</div>
+</div>
+`;
 <script>
-function analiz() {
-
-  const h = home.value || "Ev Takımı";
-  const a = away.value || "Deplasman Takımı";
-  const lig = document.getElementById("lig").value;
-  const sonuc = document.getElementById("sonuc");
-
-  // Lig ortalamaları (yarı-gerçek)
-  const ligOrt = {
-    superlig: { ev:47, ber:26, dep:27, ust:35, alt:65, kgv:41, kgy:59 },
-    premier:  { ev:44, ber:25, dep:31, ust:53, alt:47, kgv:59, kgy:41 },
-    laliga:   { ev:46, ber:28, dep:26, ust:42, alt:58, kgv:45, kgy:55 }
-  };
-
-  // Saatlik küçük dalgalanma
-  const saat = new Date().getHours();
-  const oynat = (v) => Math.max(5, Math.min(95, v + (saat % 5) - 2));
-
-  const o = ligOrt[lig];
-  const stats = {
-    ev: oynat(o.ev),
-    ber: oynat(o.ber),
-    dep: oynat(o.dep),
-    ust: oynat(o.ust),
-    alt: oynat(o.alt),
-    kgv: oynat(o.kgv),
-    kgy: oynat(o.kgy)
-  };
-
-  const satirlar = [
-    "MAÇ ANALİZ RAPORU",
-    `${h} vs ${a}`,
-    `Lig: ${lig.toUpperCase()} (Güncel Ortalama)`,
-    "",
-    `Ev Kazanır: %${stats.ev}`,
-    `Beraberlik: %${stats.ber}`,
-    `Deplasman Kazanır: %${stats.dep}`,
-    "",
-    `2.5 Üst: %${stats.ust}`,
-    `2.5 Alt: %${stats.alt}`,
-    "",
-    `KG Var: %${stats.kgv}`,
-    `KG Yok: %${stats.kgy}`,
-    "",
-    "Not: Lig ortalamalarına dayalı istatistiksel analizdir.",
-    "(Bilgilendirme amaçlıdır)"
-  ];
-
-  sonuc.innerText = "";
-  satirlar.forEach((s, i) => {
-    setTimeout(() => {
-      sonuc.innerText += s + "\n";
-    }, i * 550);
-  });
-}
-</script>
- 
-
-
+  
 </body>
 </html>
