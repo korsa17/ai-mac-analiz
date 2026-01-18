@@ -22,27 +22,39 @@
 
 <pre id="sonuc"></pre>
 
+
 <script>
 function analiz() {
   const h = home.value;
   const a = away.value;
-  document.getElementById("sonuc").innerText =
-`MAÇ ANALİZ RAPORU
+  const sonuc = document.getElementById("sonuc");
 
-${h} vs ${a}
+  const satirlar = [
+    "MAÇ ANALİZ RAPORU",
+    `${h} vs ${a}`,
+    "",
+    "Ev Kazanır: %50",
+    "Beraberlik: %20",
+    "Deplasman Kazanır: %30",
+    "",
+    "2.5 Üst: %36",
+    "2.5 Alt: %64",
+    "",
+    "KG Var: %42",
+    "KG Yok: %58",
+    "",
+    "(Bilgilendirme amaçlıdır)"
+  ];
 
-Ev Kazanır: %50
-Beraberlik: %20
-Deplasman Kazanır: %30
+  sonuc.innerText = "";
 
-2.5 Üst: %36
-2.5 Alt: %64
-
-KG Var: %42
-KG Yok: %58
-
-(Bilgilendirme amaçlıdır)`;
+  satirlar.forEach((satir, i) => {
+    setTimeout(() => {
+      sonuc.innerText += satir + "\n";
+    }, i * 700);
+  });
 }
+ 
 </script>
 
 </body>
