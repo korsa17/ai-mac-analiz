@@ -1,4 +1,3 @@
-</
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -8,131 +7,89 @@
 
 <style>
 body {
-  font-family: Arial, sans-serif;
-  background: #f1f8f4;
-  padding: 20px;
+  font-family: Arial;
+  background:#f4f4f4;
+  padding:20px;
 }
-
-h2 {
-  text-align: center;
-  color: #1b5e20;
+select, input, button {
+  width:100%;
+  padding:12px;
+  margin:8px 0;
 }
-
-select, button {
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  font-size: 16px;
-  border-radius: 6px;
-}
-
 button {
-  background: #2e7d32;
-  color: white;
-  border: none;
-  font-weight: bold;
+  background:#2e7d32;
+  color:#fff;
+  border:none;
+  font-size:16px;
 }
-
 .card {
-  background: #fff;
-  border-radius: 10px;
-  padding: 15px;
-  margin-top: 15px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  background:#fff;
+  padding:15px;
+  margin-top:15px;
+  border-radius:8px;
 }
-
 .bar {
-  background: #e0e0e0;
-  border-radius: 20px;
-  overflow: hidden;
-  margin-bottom: 10px;
+  height:12px;
+  background:#c8e6c9;
+  border-radius:6px;
+  margin-bottom:10px;
 }
-
-.bar-fill {
-  height: 14px;
-  background: #43a047;
-}
-
-.small {
-  font-size: 13px;
-  color: #555;
+.fill {
+  height:100%;
+  background:#2e7d32;
+  border-radius:6px;
 }
 </style>
 </head>
 
 <body>
 
+<h2>AI Maç Analiz</h2>
+
 <select id="lang">
   <option value="tr">Türkçe</option>
   <option value="en">English</option>
 </select>
 
-<h2>AI Maç Analiz</h2>
-
-<select id="lig">
-  <option value="superlig">Süper Lig</option>
-  <option value="premier">Premier League</option>
-  <option value="laliga">La Liga</option>
-  <option value="seriea">Serie A</option>
-  <option value="bundesliga">Bundesliga</option>
-  <option value="ligue1">Ligue 1</option>
-</select>
-
-<select id="home"></select>
-<select id="away"></select>
+<input id="home" placeholder="Ev Takımı">
+<input id="away" placeholder="Deplasman Takımı">
 
 <button onclick="analiz()">Analizi Göster</button>
 
 <div id="sonuc"></div>
 
 <script>
-// TÜM TAKIMLAR
-const tumTakimlar = [
-  "Galatasaray","Fenerbahçe","Beşiktaş","Trabzonspor","Başakşehir",
-  "Manchester City","Arsenal","Liverpool","Chelsea","Manchester United",
-  "Real Madrid","Barcelona","Atletico Madrid",
-  "Inter","Milan","Juventus","Napoli",
-  "Bayern Munich","Borussia Dortmund","RB Leipzig",
-  "PSG","Marseille","Lyon"
-];
-
-// SELECT DOLDUR
-const home = document.getElementById("home");
-const away = document.getElementById("away");
-
-home.innerHTML = "<option>Ev Takımı Seç</option>";
-away.innerHTML = "<option>Deplasman Takımı Seç</option>";
-
-tumTakimlar.forEach(t => {
-  home.innerHTML += `<option>${t}</option>`;
-  away.innerHTML += `<option>${t}</option>`;
-});
-
-// ANALİZ
 function analiz() {
-  const h = home.value;
-  const a = away.value;
-  const lig = document.getElementById("lig").value;
+  const h = home.value || "Home";
+  const a = away.value || "Away";
   const lang = document.getElementById("lang").value;
   const sonuc = document.getElementById("sonuc");
 
-  const ligOrt = {
-    superlig: { ev:47, ber:26, dep:27, ust:35, alt:65, kgv:41, kgy:59 },
-    premier:  { ev:44, ber:25, dep:31, ust:53, alt:47, kgv:59, kgy:41 },
-    laliga:   { ev:46, ber:28, dep:26, ust:42, alt:58, kgv:45, kgy:55 },
-    seriea:   { ev:45, ber:30, dep:25, ust:40, alt:60, kgv:46, kgy:54 },
-    bundesliga:{ ev:48, ber:22, dep:30, ust:55, alt:45, kgv:60, kgy:40 },
-    ligue1:   { ev:46, ber:27, dep:27, ust:44, alt:56, kgv:47, kgy:53 }
+  const t = {
+    tr: { home:"Ev Kazanır", draw:"Beraberlik", away:"Deplasman", note:"Bilgilendirme amaçlıdır" },
+    en: { home:"Home Win", draw:"Draw", away:"Away Win", note:"For information only" }
   };
 
-  const s = ligOrt[lig];
+  const ev = 45, ber = 25, dep = 30;
 
-  const t = {
-    tr: {
-      home:"Ev Kazanır", draw:"Beraberlik", away:"Deplasman Kazanır",
-      over:"2.5 Üst", under:"2.5 Alt",
-      btts:"KG Var", nobtts:"KG Yok",
-      note:"Bilgilendirme amaçlıdır"
-    },
-    en: {
-      home:"Home Win", draw:"Draw", away
+  sonuc.innerHTML = `
+    <div class="card">
+      <b>${h} vs ${a}</b><br><br>
+
+      ${t[lang].home}: %${ev}
+      <div class="bar"><div class="fill" style="width:${ev}%"></div></div>
+
+      ${t[lang].draw}: %${ber}
+      <div class="bar"><div class="fill" style="width:${ber}%"></div></div>
+
+      ${t[lang].away}: %${dep}
+      <div class="bar"><div class="fill" style="width:${dep}%"></div></div>
+
+      <small>${t[lang].note}</small>
+    </div>
+  `;
+}
+</script>
+
+</body>
+</html>
