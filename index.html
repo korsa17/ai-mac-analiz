@@ -52,6 +52,40 @@ button {
 <div id="sonuc"></div>
 
 <script>
+  <script>
+function analiz() {
+  const h = home.value;
+  const a = away.value;
+  const sonuc = document.getElementById("sonuc");
+
+  // Temel güç (takım bağımsız)
+  let ev = Math.floor(Math.random() * 20) + 35;   // 35–55
+  let dep = Math.floor(Math.random() * 20) + 30;  // 30–50
+  let ber = 100 - ev - dep;
+
+  // Beraberlik tabanı
+  if (ber < 15) {
+    ber = 15;
+    if (ev > dep) ev = 100 - ber - dep;
+    else dep = 100 - ber - ev;
+  }
+
+  // Yuvarlama
+  ev = Math.round(ev);
+  ber = Math.round(ber);
+  dep = 100 - ev - ber;
+
+  sonuc.innerText =
+`MAÇ ANALİZ RAPORU
+${h} vs ${a}
+
+Ev Kazanır: %${ev}
+Beraberlik: %${ber}
+Deplasman Kazanır: %${dep}
+
+(Bilgilendirme amaçlıdır)`;
+}
+</script>
 function analiz() {
   const h = home.value;
   const a = away.value;
