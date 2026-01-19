@@ -7,37 +7,36 @@
 
 <style>
 body {
-  font-family: Arial;
-  background:#f4f4f4;
-  padding:20px;
+  font-family: Arial, sans-serif;
+  background: #f4fdf6;
+  padding: 20px;
 }
-select, input, button {
-  width:100%;
-  padding:12px;
-  margin:8px 0;
+
+h2 {
+  text-align: center;
+  color: #1b5e20;
 }
+
+select, button {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  font-size: 16px;
+}
+
 button {
-  background:#2e7d32;
-  color:#fff;
-  border:none;
-  font-size:16px;
+  background: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 6px;
 }
-.card {
-  background:#fff;
-  padding:15px;
-  margin-top:15px;
-  border-radius:8px;
-}
-.bar {
-  height:12px;
-  background:#c8e6c9;
-  border-radius:6px;
-  margin-bottom:10px;
-}
-.fill {
-  height:100%;
-  background:#2e7d32;
-  border-radius:6px;
+
+#sonuc {
+  background: white;
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 6px;
+  white-space: pre-line;
 }
 </style>
 </head>
@@ -46,20 +45,34 @@ button {
 
 <h2>AI Maç Analiz</h2>
 
-<select id="lang">
+<select id="lang" onchange="degistirDil()">
   <option value="tr">Türkçe</option>
   <option value="en">English</option>
 </select>
 
-<input id="home" placeholder="Ev Takımı">
-<input id="away" placeholder="Deplasman Takımı">
+<select id="league" onchange="takimlariYukle()"></select>
+
+<select id="home"></select>
+<select id="away"></select>
 
 <button onclick="analiz()">Analizi Göster</button>
 
 <div id="sonuc"></div>
 
 <script>
-  <script>
+// 🌍 Dil metinleri
+const t = {
+  tr: {
+    report: "MAÇ ANALİZ RAPORU",
+    note: "Bilgilendirme amaçlıdır"
+  },
+  en: {
+    report: "MATCH ANALYSIS REPORT",
+    note: "For information only"
+  }
+};
+
+// ⚽ Ligler ve Takımlar
 const ligler = {
   premier: {
     ad: "Premier League",
@@ -75,6 +88,7 @@ const ligler = {
   }
 };
 
+// 🔄 Ligleri yükle
 function ligleriYukle() {
   const league = document.getElementById("league");
   league.innerHTML = "";
@@ -84,52 +98,63 @@ function ligleriYukle() {
   takimlariYukle();
 }
 
+// 🔄 Takımları yükle
 function takimlariYukle() {
-  const secilenLig = document.getElementById("league").value;
+  const lig = document.getElementById("league").value;
   const home = document.getElementById("home");
   const away = document.getElementById("away");
 
   home.innerHTML = "";
   away.innerHTML = "";
 
-  ligler[secilenLig].takimlar.forEach(t => {
+  ligler[lig].takimlar.forEach(t => {
     home.innerHTML += `<option>${t}</option>`;
     away.innerHTML += `<option>${t}</option>`;
   });
 }
 
-window.onload = ligleriYukle;
-</script>
-function analiz() {
-  const h = home.value || "Home";
-  const a = away.value || "Away";
-  const lang = document.getElementById("lang").value;
-  const sonuc = document.getElementById("sonuc");
-
-  const t = {
-    tr: { home:"Ev Kazanır", draw:"Beraberlik", away:"Deplasman", note:"Bilgilendirme amaçlıdır" },
-    en: { home:"Home Win", draw:"Draw", away:"Away Win", note:"For information only" }
-  };
-
-  const ev = 45, ber = 25, dep = 30;
-
-  sonuc.innerHTML = `
-    <div class="card">
-      <b>${h} vs ${a}</b><br><br>
-
-      ${t[lang].home}: %${ev}
-      <div class="bar"><div class="fill" style="width:${ev}%"></div></div>
-
-      ${t[lang].draw}: %${ber}
-      <div class="bar"><div class="fill" style="width:${ber}%"></div></div>
-
-      ${t[lang].away}: %${dep}
-      <div class="bar"><div class="fill" style="width:${dep}%"></div></div>
-
-      <small>${t[lang].note}</small>
-    </div>
-  `;
+// 🌐 Dil değiştir
+function degistirDil() {
+  analiz();
 }
+
+// 📊 Analiz
+function analiz() {
+  const lang = document.getElementById("lang").value;
+  const h = document.getElementById("home").value;
+  const a = document.getElementById("away").value;
+  const s = document.getElementById("sonuc");
+
+  // Basit örnek oranlar (offline – stabil)
+  const ev = 40 + Math.floor(Math.random()*15);
+  const ber = 20 + Math.floor(Math.random()*10);
+  const dep = 100 - ev - ber;
+
+  const ust = 45 + Math.floor(Math.random()*15);
+  const alt = 100 - ust;
+
+  const kgv = 50 + Math.floor(Math.random()*15);
+  const kgy = 100 - kgv;
+
+  s.innerText =
+`${t[lang].report}
+${h} vs ${a}
+
+Ev Kazanır: %${ev}
+Beraberlik: %${ber}
+Deplasman Kazanır: %${dep}
+
+2.5 Üst: %${ust}
+2.5 Alt: %${alt}
+
+KG Var: %${kgv}
+KG Yok: %${kgy}
+
+(${t[lang].note})`;
+}
+
+// 🚀 Başlat
+window.onload = ligleriYukle;
 </script>
 
 </body>
