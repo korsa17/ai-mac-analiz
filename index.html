@@ -59,6 +59,47 @@ button {
 <div id="sonuc"></div>
 
 <script>
+  <script>
+const ligler = {
+  premier: {
+    ad: "Premier League",
+    takimlar: ["Arsenal","Aston Villa","Chelsea","Liverpool","Man City","Man United","Everton"]
+  },
+  laliga: {
+    ad: "La Liga",
+    takimlar: ["Barcelona","Real Madrid","Atletico Madrid","Sevilla","Valencia"]
+  },
+  superlig: {
+    ad: "Süper Lig",
+    takimlar: ["Galatasaray","Fenerbahçe","Beşiktaş","Trabzonspor","Başakşehir"]
+  }
+};
+
+function ligleriYukle() {
+  const league = document.getElementById("league");
+  league.innerHTML = "";
+  for (let k in ligler) {
+    league.innerHTML += `<option value="${k}">${ligler[k].ad}</option>`;
+  }
+  takimlariYukle();
+}
+
+function takimlariYukle() {
+  const secilenLig = document.getElementById("league").value;
+  const home = document.getElementById("home");
+  const away = document.getElementById("away");
+
+  home.innerHTML = "";
+  away.innerHTML = "";
+
+  ligler[secilenLig].takimlar.forEach(t => {
+    home.innerHTML += `<option>${t}</option>`;
+    away.innerHTML += `<option>${t}</option>`;
+  });
+}
+
+window.onload = ligleriYukle;
+</script>
 function analiz() {
   const h = home.value || "Home";
   const a = away.value || "Away";
