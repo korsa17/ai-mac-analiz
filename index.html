@@ -8,29 +8,29 @@
 <style>
 body {
   font-family: Arial;
-  background: #f1fff4;
-  padding: 20px;
+  background:#f4fdf6;
+  padding:20px;
 }
 h2 {
-  text-align: center;
-  color: #1b5e20;
+  text-align:center;
+  color:#1b5e20;
 }
 select, button {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  font-size: 16px;
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  font-size:16px;
 }
 button {
-  background: #2e7d32;
-  color: white;
-  border: none;
+  background:#2e7d32;
+  color:white;
+  border:none;
 }
 #sonuc {
-  background: white;
-  padding: 15px;
-  margin-top: 15px;
-  white-space: pre-line;
+  background:white;
+  padding:15px;
+  margin-top:15px;
+  white-space:pre-line;
 }
 </style>
 </head>
@@ -52,30 +52,37 @@ button {
 <div id="sonuc"></div>
 
 <script>
-  <script>
+const takimlar = {
+  superlig: ["Galatasaray","Fenerbahçe","Beşiktaş","Trabzonspor"],
+  premier: ["Arsenal","Chelsea","Liverpool","Man City"]
+};
+
+function takimlariDoldur() {
+  const lig = document.getElementById("league").value;
+  const home = document.getElementById("home");
+  const away = document.getElementById("away");
+
+  home.innerHTML = "";
+  away.innerHTML = "";
+
+  takimlar[lig].forEach(t => {
+    home.innerHTML += `<option>${t}</option>`;
+    away.innerHTML += `<option>${t}</option>`;
+  });
+}
+
+document.getElementById("league").addEventListener("change", takimlariDoldur);
+takimlariDoldur();
+
 function analiz() {
   const h = home.value;
   const a = away.value;
-  const sonuc = document.getElementById("sonuc");
 
-  // Temel güç (takım bağımsız)
-  let ev = Math.floor(Math.random() * 20) + 35;   // 35–55
-  let dep = Math.floor(Math.random() * 20) + 30;  // 30–50
-  let ber = 100 - ev - dep;
+  const ev = Math.floor(Math.random()*30)+30;
+  const ber = Math.floor(Math.random()*20)+20;
+  const dep = 100 - ev - ber;
 
-  // Beraberlik tabanı
-  if (ber < 15) {
-    ber = 15;
-    if (ev > dep) ev = 100 - ber - dep;
-    else dep = 100 - ber - ev;
-  }
-
-  // Yuvarlama
-  ev = Math.round(ev);
-  ber = Math.round(ber);
-  dep = 100 - ev - ber;
-
-  sonuc.innerText =
+  document.getElementById("sonuc").innerText =
 `MAÇ ANALİZ RAPORU
 ${h} vs ${a}
 
@@ -85,44 +92,6 @@ Deplasman Kazanır: %${dep}
 
 (Bilgilendirme amaçlıdır)`;
 }
-</script>
-function analiz() {
-  const h = home.value;
-  const a = away.value;
-  const sonuc = document.getElementById("sonuc");
-
-  // Rastgele temel güçler
-  const evGuc = Math.floor(Math.random() * 30) + 40;   // 40–70
-  const depGuc = Math.floor(Math.random() * 30) + 35;  // 35–65
-
-  // Ev avantajı (küçük)
-  let ev = evGuc + 5;
-  let dep = depGuc;
-  let ber = 100 - ev - dep;
-
-  // Dengele
-  if (ber < 15) {
-    ber = 15;
-    if (ev > dep) ev = 100 - ber - dep;
-    else dep = 100 - ber - ev;
-  }
-
-  // Yuvarla
-  ev = Math.round(ev);
-  ber = Math.round(ber);
-  dep = 100 - ev - ber;
-
-  sonuc.innerText =
-`MAÇ ANALİZ RAPORU
-${h} vs ${a}
-
-Ev Kazanır: %${ev}
-Beraberlik: %${ber}
-Deplasman Kazanır: %${dep}
-
-(Bilgilendirme amaçlıdır)`;
-}
-
 </script>
 
 </body>
