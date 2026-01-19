@@ -7,40 +7,42 @@
 
 <style>
 body {
-  font-family: Arial;
-  background:#f4fdf6;
+  font-family: Arial, sans-serif;
+  background:#f4f7f4;
   padding:20px;
 }
-h2 {
+h1 {
   text-align:center;
   color:#1b5e20;
 }
 select, button {
   width:100%;
   padding:12px;
-  margin:8px 0;
+  margin-top:10px;
   font-size:16px;
 }
 button {
   background:#2e7d32;
-  color:white;
+  color:#fff;
   border:none;
+  border-radius:6px;
 }
-#sonuc {
-  background:white;
+pre {
+  background:#fff;
   padding:15px;
   margin-top:15px;
-  white-space:pre-line;
+  white-space:pre-wrap;
+  border-radius:6px;
 }
 </style>
 </head>
 
 <body>
 
-<h2>AI Maç Analiz</h2>
+<h1>AI Maç Analiz</h1>
 
-<select id="league">
-  <option value="superlig">Süper Lig</option>
+<select id="lig" onchange="takimlariYukle()">
+  <option value="super">Süper Lig</option>
   <option value="premier">Premier League</option>
 </select>
 
@@ -49,49 +51,65 @@ button {
 
 <button onclick="analiz()">Analizi Göster</button>
 
-<div id="sonuc"></if (home === away) {
-  alert("Ev ve deplasman takımı aynı olamaz");
-  return;
-}div>
+<pre id="sonuc"></pre>
 
 <script>
-const takimlar = {
-  superlig: ["Galatasaray","Fenerbahçe","Beşiktaş","Trabzonspor"],
+const ligler = {
+  super: ["Galatasaray","Fenerbahçe","Beşiktaş","Trabzonspor"],
   premier: ["Arsenal","Chelsea","Liverpool","Man City"]
 };
 
-function takimlariDoldur() {
-  const lig = document.getElementById("league").value;
+function takimlariYukle() {
+  const lig = document.getElementById("lig").value;
   const home = document.getElementById("home");
   const away = document.getElementById("away");
 
   home.innerHTML = "";
   away.innerHTML = "";
 
-  takimlar[lig].forEach(t => {
+  ligler[lig].forEach(t => {
     home.innerHTML += `<option>${t}</option>`;
     away.innerHTML += `<option>${t}</option>`;
   });
 }
 
-document.getElementById("league").addEventListener("change", takimlariDoldur);
-takimlariDoldur();
+takimlariYukle();
 
 function analiz() {
   const h = home.value;
   const a = away.value;
+  const sonuc = document.getElementById("sonuc");
 
-  const ev = Math.floor(Math.random()*30)+30;
-  const ber = Math.floor(Math.random()*20)+20;
-  const dep = 100 - ev - ber;
+  if (h === a) {
+    alert("Ev ve deplasman takımı aynı olamaz");
+    return;
+  }
 
-  document.getElementById("sonuc").innerText =
+  let ev = Math.floor(Math.random() * 21) + 30;   // 30–50
+  let dep = Math.floor(Math.random() * 21) + 20;  // 20–40
+  let ber = 100 - ev - dep;
+
+  if (ber < 15) {
+    ber = 15;
+    dep = 100 - ev - ber;
+  }
+
+  const ust = Math.floor(Math.random() * 31) + 35;
+  const kgv = Math.floor(Math.random() * 31) + 35;
+
+  sonuc.innerText =
 `MAÇ ANALİZ RAPORU
 ${h} vs ${a}
 
 Ev Kazanır: %${ev}
 Beraberlik: %${ber}
 Deplasman Kazanır: %${dep}
+
+2.5 Üst: %${ust}
+2.5 Alt: %${100 - ust}
+
+KG Var: %${kgv}
+KG Yok: %${100 - kgv}
 
 (Bilgilendirme amaçlıdır)`;
 }
