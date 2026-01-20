@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>AI Maç Analiz</title>
+<title>Canlı Maç Takibi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -15,103 +15,125 @@ h1 {
   text-align:center;
   color:#1b5e20;
 }
-select, button {
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  font-size:16px;
+.card {
+  background:#fff;
+  padding:15px;
+  border-radius:8px;
+  margin-top:15px;
+}
+.score {
+  font-size:32px;
+  text-align:center;
+  margin:10px 0;
+}
+.minute {
+  text-align:center;
+  font-size:18px;
+  color:#d32f2f;
+}
+.bar {
+  background:#e0e0e0;
+  height:12px;
+  border-radius:6px;
+  overflow:hidden;
+  margin-bottom:10px;
+}
+.fill {
+  height:100%;
+  background:#2e7d32;
+}
+.small {
+  font-size:14px;
+  color:#555;
 }
 button {
+  width:100%;
+  padding:12px;
   background:#2e7d32;
   color:#fff;
   border:none;
   border-radius:6px;
-}
-pre {
-  background:#fff;
-  padding:15px;
-  margin-top:15px;
-  white-space:pre-wrap;
-  border-radius:6px;
+  font-size:16px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>AI Maç Analiz</h1>
+<h1>Canlı Maç</h1>
 
-<select id="lig" onchange="takimlariYukle()">
-  <option value="super">Süper Lig</option>
-  <option value="premier">Premier League</option>
+<select id="home">
+  <option>Galatasaray</option>
+  <option>Fenerbahçe</option>
+  <option>Beşiktaş</option>
+  <option>Trabzonspor</option>
 </select>
 
-<select id="home"></select>
-<select id="away"></select>
+<select id="away">
+  <option>Fenerbahçe</option>
+  <option>Galatasaray</option>
+  <option>Beşiktaş</option>
+  <option>Trabzonspor</option>
+</select>
 
-<button onclick="analiz()">Analizi Göster</button>
+<button onclick="baslat()">Maçı Başlat</button>
 
-<pre id="sonuc"></pre>
+<div id="mac" style="display:none">
+  <div class="card">
+    <div class="minute" id="dk">0'</div>
+    <div class="score" id="skor">0 - 0</div>
+
+    <div class="small">Topa Sahip Olma</div>
+    <div class="bar"><div class="fill" id="pos"></div></div>
+
+    <div class="small">Şut</div>
+    <div class="bar"><div class="fill" id="shot"></div></div>
+
+    <div class="small">İsabetli Şut</div>
+    <div class="bar"><div class="fill" id="shotOn"></div></div>
+
+    <div class="small" id="durum">Maç Devam Ediyor</div>
+  </div>
+</div>
 
 <script>
-const ligler = {
-  super: ["Galatasaray","Fenerbahçe","Beşiktaş","Trabzonspor"],
-  premier: ["Arsenal","Chelsea","Liverpool","Man City"]
-};
+let dakika = 0;
+let evGol = 0;
+let depGol = 0;
+let timer;
 
-function takimlariYukle() {
-  const lig = document.getElementById("lig").value;
-  const home = document.getElementById("home");
-  const away = document.getElementById("away");
+function baslat() {
+  document.getElementById("mac").style.display = "block";
+  dakika = 0;
+  evGol = 0;
+  depGol = 0;
+  clearInterval(timer);
 
-  home.innerHTML = "";
-  away.innerHTML = "";
+  timer = setInterval(() => {
+    dakika++;
 
-  ligler[lig].forEach(t => {
-    home.innerHTML += `<option>${t}</option>`;
-    away.innerHTML += `<option>${t}</option>`;
-  });
-}
+    // Gol ihtimali
+    if (Math.random() < 0.08) {
+      Math.random() < 0.5 ? evGol++ : depGol++;
+    }
 
-takimlariYukle();
+    // İstatistikler
+    const pos = Math.floor(Math.random()*40)+30; // 30–70
+    const shot = Math.floor(Math.random()*60)+20;
+    const shotOn = Math.floor(Math.random()*40)+10;
 
-function analiz() {
-  const h = home.value;
-  const a = away.value;
-  const sonuc = document.getElementById("sonuc");
+    // Güncelle
+    document.getElementById("dk").innerText = dakika + "'";
+    document.getElementById("skor").innerText = evGol + " - " + depGol;
+    document.getElementById("pos").style.width = pos + "%";
+    document.getElementById("shot").style.width = shot + "%";
+    document.getElementById("shotOn").style.width = shotOn + "%";
 
-  if (h === a) {
-    alert("Ev ve deplasman takımı aynı olamaz");
-    return;
-  }
-
-  let ev = Math.floor(Math.random() * 21) + 30;   // 30–50
-  let dep = Math.floor(Math.random() * 21) + 20;  // 20–40
-  let ber = 100 - ev - dep;
-
-  if (ber < 15) {
-    ber = 15;
-    dep = 100 - ev - ber;
-  }
-
-  const ust = Math.floor(Math.random() * 31) + 35;
-  const kgv = Math.floor(Math.random() * 31) + 35;
-
-  sonuc.innerText =
-`MAÇ ANALİZ RAPORU
-${h} vs ${a}
-
-Ev Kazanır: %${ev}
-Beraberlik: %${ber}
-Deplasman Kazanır: %${dep}
-
-2.5 Üst: %${ust}
-2.5 Alt: %${100 - ust}
-
-KG Var: %${kgv}
-KG Yok: %${100 - kgv}
-
-(Bilgilendirme amaçlıdır)`;
+    if (dakika >= 90) {
+      clearInterval(timer);
+      document.getElementById("durum").innerText = "Maç Bitti";
+    }
+  }, 1000);
 }
 </script>
 
